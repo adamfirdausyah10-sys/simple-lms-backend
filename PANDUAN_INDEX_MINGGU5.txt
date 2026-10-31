@@ -1,0 +1,18 @@
+PENTING: jalankan EXPLAIN SEBELUM menambahkan index, agar data BEFORE asli tersimpan.
+
+1. docker compose exec app python manage.py explain_index
+   Simpan output BEFORE.
+2. Edit catalog/models.py bagian class Course.Meta menjadi:
+
+    class Meta:
+        ordering = ["code"]
+        indexes = [
+            models.Index(fields=["is_active", "title"]),
+        ]
+
+3. docker compose exec app python manage.py makemigrations catalog
+4. docker compose exec app python manage.py migrate
+5. docker compose exec app python manage.py explain_index
+   Simpan output AFTER. Perhatikan execution time dan scan plan.
+
+Jangan menyatakan index mempercepat tanpa angka pengukuran.
